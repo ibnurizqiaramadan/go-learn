@@ -2,6 +2,7 @@ package ApiRoutes
 
 import (
 	"go-learning/src/Api/handlers/Billings"
+	"go-learning/src/Api/handlers/ElasticSearch"
 	"go-learning/src/Api/handlers/HowToGetQuery"
 	"go-learning/src/Api/handlers/Index"
 	QueryMutation "go-learning/src/Api/handlers/Query"
@@ -21,6 +22,7 @@ func InitRoutes(http *fiber.App) {
 	http.Get("/get-pagination", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetPagination(c) })
 	http.Get("/get-where", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetWhere(c) })
 	http.Post("/mutation", func(c *fiber.Ctx) error { return QueryMutation.MutationUsers(c) })
+	http.Post("/mutation-update", func(c *fiber.Ctx) error { return QueryMutation.MutationUpdateUsers(c) })
 
 	// Billings Routes Stripe
 	BillingGroup := http.Group("billing", func(c *fiber.Ctx) error { return c.Next() })
@@ -34,4 +36,8 @@ func InitRoutes(http *fiber.App) {
 
 	// Redis Routes
 	http.Get("/redis", func(c *fiber.Ctx) error { return Redis.GetRedisByKey(c) })
+
+	// ElasticSearch Routes
+	http.Get("/elasticsearch", func(c *fiber.Ctx) error { return ElasticSearch.GetElasticSearch(c) })
+	http.Get("/es-retrieve", func(c *fiber.Ctx) error { return ElasticSearch.RetrieveElastic(c) })
 }
