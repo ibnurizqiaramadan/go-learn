@@ -1,6 +1,7 @@
 package ApiRoutes
 
 import (
+	"go-learning/src/Api/handlers/BasicUsages"
 	"go-learning/src/Api/handlers/Billings"
 	"go-learning/src/Api/handlers/ElasticSearch"
 	"go-learning/src/Api/handlers/HowToGetQuery"
@@ -14,6 +15,9 @@ import (
 
 func InitRoutes(http *fiber.App) {
 	http.Get("/", func(c *fiber.Ctx) error { return Index.Index(c) })
+
+	// basic ussages
+	http.Get("/basic/:name<int>", func(c *fiber.Ctx) error { return BasicUsages.GetDatas(c) })
 
 	// Users Routes Hasura Graphql
 	http.Get("/users", func(c *fiber.Ctx) error { return Users.AddUsers(c) })
