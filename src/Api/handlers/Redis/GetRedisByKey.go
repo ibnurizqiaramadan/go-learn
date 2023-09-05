@@ -12,30 +12,27 @@ type GetRedisKey struct {
 }
 
 func GetRedisByKey(c *fiber.Ctx) error {
-	// key := GetRedisKey{}
+	key := GetRedisKey{}
 	ctx := context.Background()
 	Client := RedisClient.Client
 
-	// CONNECT TO REDIS
-	// RedisClient := RedisClient.InitRedisConnection()
+	if errBody := c.BodyParser(&key); errBody != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"statusCode": fiber.StatusBadRequest,
+			"error":      "Cannot parse JSON",
+		})
+	}
 
-	// if errBody := c.BodyParser(&key); errBody != nil {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"statusCode": fiber.StatusBadRequest,
-	// 		"error":      "Cannot parse JSON",
-	// 	})
-	// }
+	if key.Key == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"statusCode": fiber.StatusBadRequest,
+			"error":      "key, is Required",
+		})
+	}
 
-	// if key.Key == "" {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"statusCode": fiber.StatusBadRequest,
-	// 		"error":      "key, is Required",
-	// 	})
-	// }
+	// keyParam := c.Query("key")
 
-	keyParam := c.Query("key")
-
-	data, errRedis := Client.Get(ctx, keyParam).Result()
+	data, errRedis := Client.Get(ctx, key.Key).Result()
 	if errRedis != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"statusCode": fiber.StatusBadRequest,
@@ -48,7 +45,7 @@ func GetRedisByKey(c *fiber.Ctx) error {
 		"data": fiber.Map{
 			"valid":    true,
 			"messages": "success-get-data-redis",
-			"key":      keyParam,
+			"key":      key.Key,
 			"data":     data,
 		},
 	})
