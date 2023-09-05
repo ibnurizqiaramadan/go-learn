@@ -15,6 +15,15 @@ func StoI(s string) int {
 	return result
 }
 
+func StoB(s string) bool {
+	result, error := strconv.ParseBool(s)
+	if error != nil {
+		log.Error(error)
+		return false
+	}
+	return result
+}
+
 func IsEmpty(value any, defaultVal any) any {
 	if value == nil || value == "" {
 		return defaultVal

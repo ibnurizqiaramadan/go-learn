@@ -16,16 +16,17 @@ import (
 
 func RunServer(params Interfaces.SystemInterface) {
 	app := fiber.New(fiber.Config{
-		Prefork:       true,
-		CaseSensitive: true,
-		StrictRouting: true,
-		ServerHeader:  "Fiber",
-		AppName:       "Test App v1.0.1",
+		Prefork:       params.AppPrefork,
+		CaseSensitive: params.AppCaseSensitive,
+		StrictRouting: params.AppStrictRouting,
+		ServerHeader:  params.ServerHeader,
+		AppName:       params.AppName,
 		JSONEncoder:   json.Marshal,
 		JSONDecoder:   json.Unmarshal,
 	})
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: params.CorsAllowOrigin,
+		AllowMethods: params.CorsAllowMethod,
 		AllowHeaders: params.CorsAllowHeader,
 	}))
 
@@ -35,5 +36,5 @@ func RunServer(params Interfaces.SystemInterface) {
 	ApiRoutes.InitRoutes(app)
 	app.Get("/metrics", monitor.New())
 
-	app.Listen("localhost:" + fmt.Sprint(params.Port))
+	app.Listen(params.AppListenHost + ":" + fmt.Sprint(params.AppListenPort))
 }

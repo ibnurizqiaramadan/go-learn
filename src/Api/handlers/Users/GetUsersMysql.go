@@ -1,6 +1,7 @@
 package Users
 
 import (
+	"go-learning/src/Utils/Jwt"
 	"go-learning/src/Utils/MysqlClient"
 
 	"github.com/gofiber/fiber/v2"
@@ -91,4 +92,28 @@ func TestConnection(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
 	}
 	return c.Status(fiber.StatusOK).SendString("Successfully connected to database")
+}
+
+func GenerateToken(c *fiber.Ctx) error{
+	// Create token
+	token:= Jwt.GenerateJwtToken()
+	
+	// verify token
+	verifyToken, status := Jwt.VerifyJwtToken(token)
+
+	if !status {
+		res := map[string]interface{}{
+			"message": "Token is not valid",
+			"status":  status,
+		}
+		return c.Status(fiber.StatusUnauthorized).JSON(res)
+	}
+	var response = map[string]interface{}{
+		"message": "Successfully generate token",
+		"data":    token,
+		"verify": verifyToken,
+		"status":  status,
+	}
+	// Return data
+	return c.Status(fiber.StatusOK).JSON(response)
 }
