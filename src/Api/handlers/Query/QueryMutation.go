@@ -63,3 +63,47 @@ func MutationUsers(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func MutationUpdateUsers(c *fiber.Ctx) error {
+	var q struct {
+		UpdateUsers struct {
+			Returning []struct {
+				ID any `graphql:"id"`
+				// Add other fields as needed for the update
+			} `graphql:"returning"`
+		} `graphql:"update_users(where: {id: {_eq: \"32d35924-3377-46ca-9971-88a8b77683ba\"}}, _set: {fullname: \"psp10\"})"`
+	}
+
+	// updateData := map[string]interface{}{
+	// 	"fullname": "psp10",
+	// 	// Add other fields as needed for the update
+	// }
+
+	variables := map[string]interface{}{}
+
+	log.Debug(q)
+	client := GraphqlClient.CreateAdmin()
+	err := client.Mutate(context.Background(), &q, variables, graphql.OperationName("UpdateUsers"))
+
+	messages := ""
+
+	if err != nil {
+		log.Debug(err)
+		log.Debug(q)
+		return c.Status(fiber.StatusBadGateway).SendString("Something went wrong: " + err.Error())
+	} else {
+		if len(q.UpdateUsers.Returning) == 0 {
+			messages = "fail2"
+		} else {
+			messages = "success"
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"statusCode": fiber.StatusOK,
+		"data": fiber.Map{
+			"valid":    true,
+			"messages": messages,
+		},
+	})
+}
