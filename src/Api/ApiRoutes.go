@@ -28,6 +28,7 @@ func InitRoutes(http *fiber.App) {
 	// Users Routes Mysql
 	http.Get("/test", func(c *fiber.Ctx) error { return Users.TestConnection(c) })
 	http.Get("/users/:id", func(c *fiber.Ctx) error { return Users.GetUserDetails(c) })
+	http.Get("/token", func(c *fiber.Ctx) error { return Users.GenerateToken(c) })
 
 	// Redis Routes
 	http.Get("/redis", func(c *fiber.Ctx) error { return Redis.GetRedisByKey(c) })
