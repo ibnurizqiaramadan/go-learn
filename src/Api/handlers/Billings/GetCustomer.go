@@ -2,31 +2,25 @@ package Billings
 
 import (
 	"go-learning/src/Utils/StripeClient"
+	"go-learning/src/Utils/Validation"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go/customer"
 )
 
 type GetCustomerId struct {
-	Customer_id string `json:"customer_id"`
+	Customer_id string `json:"customer_id" validate:"required"`
+	Name        string `json:"name" validate:"required"`
 }
 
 func GetCustomer(c *fiber.Ctx) error {
 	StripeClient.InitStripe()
 
-	custommer := GetCustomerId{}
-	if err := c.BodyParser(&custommer); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "Cannot parse JSON",
-		})
-	}
-
-	if custommer.Customer_id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "customer_id, is Required",
-		})
+	// custommer := GetCustomerId{}
+	custommer := new(GetCustomerId)
+	errors, isValid := Validation.ValidateInput(c, custommer)
+	if !isValid {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"errors": errors})
 	}
 
 	StripeClient.InitStripe()
