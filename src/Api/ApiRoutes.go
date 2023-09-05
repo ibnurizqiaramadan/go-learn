@@ -39,4 +39,5 @@ func InitRoutes(http *fiber.App) {
 
 	// ElasticSearch Routes
 	http.Get("/elasticsearch", func(c *fiber.Ctx) error { return ElasticSearch.GetElasticSearch(c) })
+	http.Get("/es-retrieve", func(c *fiber.Ctx) error { return ElasticSearch.RetrieveElastic(c) })
 }
