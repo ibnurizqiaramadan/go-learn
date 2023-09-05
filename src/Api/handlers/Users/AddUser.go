@@ -13,10 +13,15 @@ func AddUsers(c *fiber.Ctx) error {
 }
 
 func AddUserMysql(c *fiber.Ctx) error {
+	dataBody := new(User)
+	if err := c.BodyParser(dataBody); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error retrieving data")
+	}
+
 	id := uuid.New()
-	username := c.Params("username")
-	password := c.Params("password")
-	role := c.Params("role")
+	username := dataBody.Username
+	password := "123456"
+	role := dataBody.Role
 	createAt := time.Now()
 	updateAt := time.Now()
 
@@ -26,5 +31,9 @@ func AddUserMysql(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
 	}
-	return c.Status(200).SendString("Add User Mysql !")
+	var response = map[string]interface{}{
+		"status": fiber.StatusOK,
+		"message": "Successfully add user",
+	}
+	return c.Status(fiber.StatusOK).JSON(response)
 }

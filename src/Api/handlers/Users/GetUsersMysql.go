@@ -1,19 +1,23 @@
 package Users
 
 import (
+	"context"
 	"go-learning/src/Utils/Jwt"
 	"go-learning/src/Utils/MysqlClient"
+	"time"
+
+	"go-learning/src/Utils/RedisClient"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 )
 
 type User struct {
-	Id        string
-	Username  string
-	Role      string
-	CreatedAt string
-	UpdatedAt string
+	Id        string `json:"id"`
+	Username  string `json:"username"`
+	Role      string `json:"role"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 func GetUsersMysql(c *fiber.Ctx) error {
@@ -123,12 +127,26 @@ func Login(c *fiber.Ctx) error{
 			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
 		}
 	}
+
+	// create last login
+	lastlogin:= time.Now()
+	key := "lastlogin_" + user.Username
+	ctx := context.Background()
+
+	// set to redis
+	Client := RedisClient.Client
+	errRedis := Client.Set(ctx,key,lastlogin, 30).Err()
+	if errRedis != nil {
+		log.Error(errRedis)
+		return c.Status(fiber.StatusInternalServerError).SendString("Error set data to redis")
+	}
+
 	// check if user is empty
 	if user.Id == "" {
 		var response = map[string]interface{}{
 			"message": "User not found",
 			"data":    []User{},
-			"status":  "failed",
+			"status":  fiber.StatusNotFound,
 		}
 		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
@@ -141,6 +159,7 @@ func Login(c *fiber.Ctx) error{
 	token:= Jwt.CreateToken(Jwt.Claims(data))
 	// Return data
 	var response = map[string]interface{}{
+		"status":   fiber.StatusOK,
 		"message": "Successfully login",
 		"token":    token,
 	}
