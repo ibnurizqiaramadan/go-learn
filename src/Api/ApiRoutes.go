@@ -5,6 +5,7 @@ import (
 	"go-learning/src/Api/handlers/ElasticSearch"
 	"go-learning/src/Api/handlers/HowToGetQuery"
 	"go-learning/src/Api/handlers/Index"
+	QueryMutation "go-learning/src/Api/handlers/Query"
 	"go-learning/src/Api/handlers/Redis"
 	"go-learning/src/Api/handlers/Users"
 
@@ -20,6 +21,8 @@ func InitRoutes(http *fiber.App) {
 	http.Get("/get-user", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetUsingUser(c) })
 	http.Get("/get-pagination", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetPagination(c) })
 	http.Get("/get-where", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetWhere(c) })
+	http.Post("/mutation", func(c *fiber.Ctx) error { return QueryMutation.MutationUsers(c) })
+	http.Post("/mutation-update", func(c *fiber.Ctx) error { return QueryMutation.MutationUpdateUsers(c) })
 
 	// Billings Routes Stripe
 	BillingGroup := http.Group("billing", func(c *fiber.Ctx) error { return c.Next() })
