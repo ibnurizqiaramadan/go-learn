@@ -2,6 +2,7 @@ package ApiRoutes
 
 import (
 	"go-learning/src/Api/handlers/Billings"
+	"go-learning/src/Api/handlers/ElasticSearch"
 	"go-learning/src/Api/handlers/HowToGetQuery"
 	"go-learning/src/Api/handlers/Index"
 	"go-learning/src/Api/handlers/Redis"
@@ -32,4 +33,7 @@ func InitRoutes(http *fiber.App) {
 
 	// Redis Routes
 	http.Get("/redis", func(c *fiber.Ctx) error { return Redis.GetRedisByKey(c) })
+
+	// ElasticSearch Routes
+	http.Get("/elasticsearch", func(c *fiber.Ctx) error { return ElasticSearch.GetElasticSearch(c) })
 }
