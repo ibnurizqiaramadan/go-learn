@@ -94,25 +94,55 @@ func TestConnection(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).SendString("Successfully connected to database")
 }
 
-func GenerateToken(c *fiber.Ctx) error{
-	// Create token
-	token:= Jwt.GenerateJwtToken()
-	
-	// verify token
-	verifyToken, status := Jwt.VerifyJwtToken(token)
-
-	if !status {
-		res := map[string]interface{}{
-			"message": "Token is not valid",
-			"status":  status,
-		}
-		return c.Status(fiber.StatusUnauthorized).JSON(res)
+func Login(c *fiber.Ctx) error{
+	// Get data from body request
+	dataBody := new(User)
+	if err := c.BodyParser(dataBody); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
+	// Get username body request
+	username := dataBody.Username
+	// Get data from database
+	storage := MysqlClient.CreateMysqlClient()
+	// create query
+	query := ("SELECT id, username, role, createdAt, updatedAt FROM users WHERE username = ?")
+	// execute query
+	rows, err := storage.Conn().Query(query, username)
+	if err != nil {
+		log.Error(err)
+		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
+	}
+	defer rows.Close()
+
+	// Fetch rows
+	var user User
+	for rows.Next() {
+		err := rows.Scan(&user.Id, &user.Username, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			log.Error(err)
+			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
+		}
+	}
+	// check if user is empty
+	if user.Id == "" {
+		var response = map[string]interface{}{
+			"message": "User not found",
+			"data":    []User{},
+			"status":  "failed",
+		}
+		return c.Status(fiber.StatusNotFound).JSON(response)
+	}
+	// create data playload
+	data := Jwt.Claims{
+		Authorized: true,
+		User: user.Username,
+	}
+	// create token
+	token:= Jwt.CreateToken(Jwt.Claims(data))
+	// Return data
 	var response = map[string]interface{}{
-		"message": "Successfully generate token",
-		"data":    token,
-		"verify": verifyToken,
-		"status":  status,
+		"message": "Successfully login",
+		"token":    token,
 	}
 	// Return data
 	return c.Status(fiber.StatusOK).JSON(response)
