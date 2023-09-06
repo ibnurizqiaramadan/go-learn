@@ -15,42 +15,42 @@ import (
 )
 
 func InitRoutes(http *fiber.App) {
-	http.Get("/", func(c *fiber.Ctx) error { return Index.Index(c) })
+	http.Get("/", Index.Index)
 
 	// basic ussages
-	http.Get("/basic/:name<int>", func(c *fiber.Ctx) error { return BasicUsages.GetDatas(c) })
+	http.Get("/basic/:name<int>", BasicUsages.GetDatas)
 
 	// Users Routes Hasura Graphql
-	http.Get("/users", func(c *fiber.Ctx) error { return Users.AddUsers(c) })
-	http.Get("/get-admin", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetUsingAdmin(c) })
-	http.Get("/get-user", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetUsingUser(c) })
-	http.Get("/get-pagination", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetPagination(c) })
-	http.Get("/get-where", func(c *fiber.Ctx) error { return HowToGetQuery.ExampleGetWhere(c) })
-	http.Post("/mutation", func(c *fiber.Ctx) error { return QueryMutation.MutationUsers(c) })
-	http.Post("/mutation-update", func(c *fiber.Ctx) error { return QueryMutation.MutationUpdateUsers(c) })
+	http.Get("/users", Users.AddUsers)
+	http.Get("/users/:name", Users.AddUsers)
+	http.Get("/get-admin", HowToGetQuery.ExampleGetUsingAdmin)
+	http.Get("/get-user", HowToGetQuery.ExampleGetUsingUser)
+	http.Get("/get-pagination", HowToGetQuery.ExampleGetPagination)
+	http.Get("/get-where", HowToGetQuery.ExampleGetWhere)
+	http.Post("/mutation", QueryMutation.MutationUsers)
+	http.Post("/mutation-update", QueryMutation.MutationUpdateUsers)
 
 	// Billings Routes Stripe
 	BillingGroup := http.Group("billing", func(c *fiber.Ctx) error { return c.Next() })
-	BillingGroup.Post("/create-customer", func(c *fiber.Ctx) error { return Billings.AddCustomer(c) })
-	BillingGroup.Get("/get-customer", func(c *fiber.Ctx) error { return Billings.GetCustomer(c) })
+	BillingGroup.Post("/create-customer", Billings.AddCustomer)
+	BillingGroup.Get("/get-customer", Billings.GetCustomer)
 
 	// Users Routes Mysql
-	http.Get("/test", func(c *fiber.Ctx) error { return Users.TestConnection(c) })
-	http.Get("/users/:id", func(c *fiber.Ctx) error { return Users.GetUserDetails(c) })
-	http.Post("/login", func(c *fiber.Ctx) error { return Users.Login(c) })
-	http.Post("/user/add", func(c *fiber.Ctx) error { return Users.AddUserMysql(c) })
+	http.Get("/test", Users.TestConnection)
+	http.Get("/users/:id", Users.GetUserDetails)
+	http.Post("/login", Users.Login)
+	http.Post("/user/add", Users.AddUserMysql)
 
 	// Redis Routes
-	http.Get("/redis", func(c *fiber.Ctx) error { return Redis.GetRedisByKey(c) })
+	http.Get("/redis", Redis.GetRedisByKey)
 
 	// ElasticSearch Routes
-	http.Get("/elasticsearch", func(c *fiber.Ctx) error { return ElasticSearch.GetElasticSearch(c) })
-	http.Get("/es-retrieve", func(c *fiber.Ctx) error { return ElasticSearch.RetrieveElastic(c) })
+	http.Get("/elasticsearch", ElasticSearch.GetElasticSearch)
+	http.Get("/es-retrieve", ElasticSearch.RetrieveElastic)
 
 	// UPLOAD FILE
-	http.Post("/upload", func(c *fiber.Ctx) error { return BasicUsages.UploadFile(c) })
-	http.Post("/upload-minio", func(c *fiber.Ctx) error { return BasicUsages.UploadFileAws(c) })
+	http.Post("/upload", BasicUsages.UploadFile)
 
 	// RabbitMQ
-	http.Get("/rabbitmq", func(c *fiber.Ctx) error { return RabbitMQ.SendRebbitMQ(c) })
+	http.Get("/rabbitmq", RabbitMQ.SendRebbitMQ)
 }
