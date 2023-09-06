@@ -15,7 +15,7 @@ func GetCustomer(c *fiber.Ctx) error {
 	custommer := new(GetCustomerId)
 	errors, isValid := Validation.ValidateInput(c, custommer)
 	if !isValid {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"errors": errors})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"statusCode": fiber.StatusBadRequest, "messages": "Invalid Input", "errors": errors})
 	}
 	cus, _ := customer.Get(custommer.Customer_id, nil)
 

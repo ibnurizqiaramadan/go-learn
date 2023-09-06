@@ -3,6 +3,7 @@ package Redis
 import (
 	"context"
 	"go-learning/src/Utils/RedisClient"
+	"go-learning/src/Utils/Validation"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,21 +17,10 @@ func GetRedisByKey(c *fiber.Ctx) error {
 	ctx := context.Background()
 	Client := RedisClient.Client
 
-	if errBody := c.BodyParser(&key); errBody != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "Cannot parse JSON",
-		})
+	errors, isValid := Validation.ValidateInput(c, key)
+	if !isValid {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"statusCode": fiber.StatusBadRequest, "messages": "Invalid Input", "errors": errors})
 	}
-
-	if key.Key == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "key, is Required",
-		})
-	}
-
-	// keyParam := c.Query("key")
 
 	data, errRedis := Client.Get(ctx, key.Key).Result()
 	if errRedis != nil {

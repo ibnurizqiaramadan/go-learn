@@ -7,6 +7,7 @@ import (
 	"go-learning/src/Api/handlers/HowToGetQuery"
 	"go-learning/src/Api/handlers/Index"
 	QueryMutation "go-learning/src/Api/handlers/Query"
+	"go-learning/src/Api/handlers/RabbitMQ"
 	"go-learning/src/Api/handlers/Redis"
 	"go-learning/src/Api/handlers/Users"
 
@@ -48,4 +49,7 @@ func InitRoutes(http *fiber.App) {
 
 	// UPLOAD FILE
 	http.Post("/upload", func(c *fiber.Ctx) error { return BasicUsages.UploadFile(c) })
+
+	// RabbitMQ
+	http.Get("/rabbitmq", func(c *fiber.Ctx) error { return RabbitMQ.SendRebbitMQ(c) })
 }

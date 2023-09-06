@@ -3,6 +3,7 @@ package Billings
 import (
 	"go-learning/src/Interfaces"
 	"go-learning/src/Utils/StripeClient"
+	"go-learning/src/Utils/Validation"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go"
@@ -13,18 +14,9 @@ func AddCustomer(c *fiber.Ctx) error {
 
 	newCustommer := Interfaces.AddCustomer{}
 
-	if err := c.BodyParser(&newCustommer); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "Cannot parse JSON",
-		})
-	}
-
-	if newCustommer.Name == "" || newCustommer.Email == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"statusCode": fiber.StatusBadRequest,
-			"error":      "Nama, Email, is eequired",
-		})
+	error, isValid := Validation.ValidateInput(c, newCustommer)
+	if !isValid {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"statusCode": fiber.StatusBadRequest, "messages": "Invalid Input", "errors": error})
 	}
 
 	StripeClient.InitStripe()
@@ -35,14 +27,12 @@ func AddCustomer(c *fiber.Ctx) error {
 	}
 	cus, _ := customer.New(params)
 
-	response := fiber.Map{
+	return c.JSON(fiber.Map{
 		"statusCode": 200,
 		"data": fiber.Map{
 			"valid":       true,
 			"messages":    "success-create-customer",
 			"customer_id": cus.ID,
 		},
-	}
-
-	return c.JSON(response)
+	})
 }
