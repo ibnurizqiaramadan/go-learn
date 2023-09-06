@@ -21,11 +21,11 @@ type UserDetail struct {
 func GetUserDetails(c *fiber.Ctx) error {
 	token := c.Request().Header.Peek("Authorization")
 	// verify token
-	_, status := Jwt.VerifyToken(string(token))
-	if !status{
+	_, status, err := Jwt.VerifyToken(string(token))
+	if !status {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
-	
+
 	storage := MysqlClient.DatabaseMod()
 	id := c.Params("id")
 	query := "SELECT subscribtion, first_name, last_name, email, picture, gender, country FROM users WHERE email = ?"

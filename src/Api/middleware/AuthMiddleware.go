@@ -4,7 +4,7 @@ import (
 	"go-learning/src/Utils/Jwt"
 
 	"github.com/gofiber/fiber/v2"
-	// "github.com/gofiber/fiber/v2/log"
+	"github.com/gofiber/fiber/v2/log"
 )
 
 func CheckAuth(c *fiber.Ctx) error {
@@ -13,10 +13,14 @@ func CheckAuth(c *fiber.Ctx) error {
 	} else {
 		header := c.GetReqHeaders()
 		token := header["Authorization"]
-		_, status := Jwt.VerifyToken(string(token))
+		_, status, err := Jwt.VerifyToken(string(token))
 		// data, status := Jwt.VerifyToken(string(token))
 
 		// log.Info(data, status)
+
+		if err != nil {
+			log.Error(err)
+		}
 
 		if token == "" || !status {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
