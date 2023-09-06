@@ -1,11 +1,18 @@
 package RedisClient
 
 import (
+	"go-learning/src/Utils/Functions"
+	"os"
+
 	"github.com/redis/go-redis/v9"
 )
 
-var Client = redis.NewClient(&redis.Options{
-	Addr:     "194.233.95.186:6381",
-	Password: "eP5gtsmn8SSSUfZQBkJIcaj0pcy8t+c4XPuiPik8gxMOan6XoTCLQuDXV8g+nLRIYpuAYdgywu9gJB+X",
-	DB:       0,
-})
+var Client *redis.Client
+
+func InitRedis() {
+	Client = redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_ADDRESS"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       Functions.StoI(os.Getenv("REDIS_DB")),
+	})
+}
