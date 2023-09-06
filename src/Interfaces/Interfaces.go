@@ -12,6 +12,9 @@ type SystemInterface struct {
 	AppListenPort    int
 	ServerHeader     string
 	AppBodyLimit     int
+	MinioEndPoiont   string
+	MinioAccesKey    string
+	MinioSecretKey   string
 }
 
 type AddCustomer struct {
