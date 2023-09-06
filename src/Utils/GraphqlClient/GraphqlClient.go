@@ -3,6 +3,7 @@ package GraphqlClient
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"github.com/hasura/go-graphql-client"
 	"golang.org/x/oauth2"
@@ -14,14 +15,14 @@ func CreateClient(token string) *graphql.Client {
 		&oauth2.Token{AccessToken: token},
 	)
 	httpClient := oauth2.NewClient(context.Background(), src)
-	Client := graphql.NewClient("https://api-dev.panorra.com/v1/graphql", httpClient)
+	Client := graphql.NewClient(os.Getenv("GRAPHQL_ENDPOINT"), httpClient)
 	return Client
 }
 
 // HEADER ADMIN
 func CreateAdmin() *graphql.Client {
 	headers := http.Header{}
-	headers.Set("x-hasura-admin-secret", "ZxWN8eNMC7Wnugtb") // Replace with your actual admin secret
+	headers.Set("x-hasura-admin-secret", os.Getenv("GRAPHQL_ADMIN_SECRET")) // Replace with your actual admin secret
 
 	// Create an HTTP client with the custom headers
 	client := &http.Client{
@@ -29,7 +30,7 @@ func CreateAdmin() *graphql.Client {
 	}
 
 	// Create a GraphQL client with a custom HTTP client
-	return graphql.NewClient("https://api-dev.panorra.com/v1/graphql", client)
+	return graphql.NewClient(os.Getenv("GRAPHQL_ENDPOINT"), client)
 }
 
 // headerTransport is a custom transport that adds headers to HTTP requests.

@@ -6,6 +6,7 @@ import (
 	ApiRoutes "go-learning/src/Api"
 	Middleware "go-learning/src/Api/middleware"
 	"go-learning/src/Interfaces"
+	"go-learning/src/Utils/RedisClient"
 	"go-learning/src/Utils/StripeClient"
 
 	"github.com/goccy/go-json"
@@ -40,6 +41,7 @@ func RunServer(params Interfaces.SystemInterface) {
 	app.Use(logger.New())                                                // logging
 
 	StripeClient.InitStripe()
+	RedisClient.InitRedis()
 
 	ApiRoutes.InitRoutes(app)
 	app.Get("/metrics", monitor.New())

@@ -49,6 +49,7 @@ func InitRoutes(http *fiber.App) {
 
 	// UPLOAD FILE
 	http.Post("/upload", func(c *fiber.Ctx) error { return BasicUsages.UploadFile(c) })
+	http.Post("/upload-minio", func(c *fiber.Ctx) error { return BasicUsages.UploadFileAws(c) })
 
 	// RabbitMQ
 	http.Get("/rabbitmq", func(c *fiber.Ctx) error { return RabbitMQ.SendRebbitMQ(c) })
