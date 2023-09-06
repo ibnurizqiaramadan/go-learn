@@ -6,12 +6,14 @@ import (
 	ApiRoutes "go-learning/src/Api"
 	Middleware "go-learning/src/Api/middleware"
 	"go-learning/src/Interfaces"
+	"go-learning/src/Utils/StripeClient"
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 func RunServer(params Interfaces.SystemInterface) {
@@ -23,8 +25,10 @@ func RunServer(params Interfaces.SystemInterface) {
 		AppName:       params.AppName,
 		JSONEncoder:   json.Marshal,
 		JSONDecoder:   json.Unmarshal,
-		BodyLimit:     100 * 1024 * 1024,
+		BodyLimit:     params.AppBodyLimit * 1024 * 1024,
 	})
+
+	app.Use(recover.New())
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: params.CorsAllowOrigin,
@@ -34,6 +38,8 @@ func RunServer(params Interfaces.SystemInterface) {
 
 	app.Use(func(c *fiber.Ctx) error { return Middleware.CheckAuth(c) }) // auth middleware check
 	app.Use(logger.New())                                                // logging
+
+	StripeClient.InitStripe()
 
 	ApiRoutes.InitRoutes(app)
 	app.Get("/metrics", monitor.New())

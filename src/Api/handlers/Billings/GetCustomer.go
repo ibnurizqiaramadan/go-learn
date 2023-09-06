@@ -1,7 +1,6 @@
 package Billings
 
 import (
-	"go-learning/src/Utils/StripeClient"
 	"go-learning/src/Utils/Validation"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,20 +9,14 @@ import (
 
 type GetCustomerId struct {
 	Customer_id string `json:"customer_id" validate:"required"`
-	Name        string `json:"name" validate:"required"`
 }
 
 func GetCustomer(c *fiber.Ctx) error {
-	StripeClient.InitStripe()
-
-	// custommer := GetCustomerId{}
 	custommer := new(GetCustomerId)
 	errors, isValid := Validation.ValidateInput(c, custommer)
 	if !isValid {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"errors": errors})
 	}
-
-	StripeClient.InitStripe()
 	cus, _ := customer.Get(custommer.Customer_id, nil)
 
 	response := fiber.Map{
