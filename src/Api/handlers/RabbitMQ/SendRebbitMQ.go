@@ -10,7 +10,7 @@ import (
 )
 
 func SendRebbitMQ(c *fiber.Ctx) error {
-	conn := RabbitMQ.Conn
+	conn := RabbitMQ.InitRabbitMQ()
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatal(err)
