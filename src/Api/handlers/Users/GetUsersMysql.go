@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-learning/src/Utils/Jwt"
 	"go-learning/src/Utils/MysqlClient"
+	"go-learning/src/Utils/Validation"
 	"time"
 
 	"go-learning/src/Utils/RedisClient"
@@ -14,7 +15,7 @@ import (
 
 type User struct {
 	Id        string `json:"id"`
-	Username  string `json:"username"`
+	Username  string `json:"username" validate:"required"`
 	Role      string `json:"role"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
@@ -80,7 +81,7 @@ func GetUserById(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 
-	var response = map[string]interface{}{
+	var response = fiber.Map{
 		"message": "Successfully get user by id",
 		"data":    user,
 		"status":  "success",
@@ -101,8 +102,9 @@ func TestConnection(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error{
 	// Get data from body request
 	dataBody := new(User)
-	if err := c.BodyParser(dataBody); err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	errors, isValid := Validation.ValidateInput(c, dataBody)
+	if !isValid {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"errors": errors})
 	}
 	// Get username body request
 	username := dataBody.Username
@@ -143,7 +145,7 @@ func Login(c *fiber.Ctx) error{
 
 	// check if user is empty
 	if user.Id == "" {
-		var response = map[string]interface{}{
+		var response = fiber.Map{
 			"message": "User not found",
 			"data":    []User{},
 			"status":  fiber.StatusNotFound,
@@ -158,10 +160,10 @@ func Login(c *fiber.Ctx) error{
 	// create token
 	token:= Jwt.CreateToken(Jwt.Claims(data))
 	// Return data
-	var response = map[string]interface{}{
-		"status":   fiber.StatusOK,
-		"message": "Successfully login",
-		"token":    token,
+	var response = fiber.Map{
+		"message": "Successfully get user by id",
+		"status":  fiber.StatusOK,
+		"token": token,
 	}
 	// Return data
 	return c.Status(fiber.StatusOK).JSON(response)
