@@ -1,14 +1,16 @@
 package MinioClient
 
 import (
+	"os"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 func ConnectMinio() (*minio.Client, error) {
-	endpoint := "194.233.95.186:9199"
-	accessKeyID := "admin"
-	secretAccessKey := "RveWRG9uyfTgw57r"
+	endpoint := os.Getenv("MINIO_ENDPOINT")
+	accessKeyID := os.Getenv("MINIO_ACCESS_KEY")
+	secretAccessKey := os.Getenv("MINIO_SECRET_KEY")
 
 	// Initialize minio client object.
 	minioClient, err := minio.New(endpoint, &minio.Options{

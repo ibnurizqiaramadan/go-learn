@@ -23,8 +23,5 @@ func main() {
 		AppListenPort:   Functions.StoI(os.Getenv("APP_LISTEN_PORT")),
 		AppListenHost:   os.Getenv("APP_LISTEN_HOST"),
 		AppBodyLimit:    Functions.StoI(os.Getenv("APP_BODY_LIMIT")),
-		MinioEndPoiont:  os.Getenv("MINIO_ENDPOINT"),
-		MinioAccesKey:   os.Getenv("MINIO_ACCESS_KEY"),
-		MinioSecretKey:  os.Getenv("MINIO_SECRET_KEY"),
 	})
 }
