@@ -37,8 +37,8 @@ func RunServer(params Interfaces.SystemInterface) {
 		AllowHeaders: params.CorsAllowHeader,
 	}))
 
-	app.Use(func(c *fiber.Ctx) error { return Middleware.CheckAuth(c) }) // auth middleware check
 	app.Use(logger.New())                                                // logging
+	app.Use(func(c *fiber.Ctx) error { return Middleware.CheckAuth(c) }) // auth middleware check
 
 	StripeClient.InitStripe()
 	RedisClient.InitRedis()
