@@ -10,14 +10,13 @@ import (
 )
 
 type Claims struct {
-	Authorized bool `json:"authorized"`
-	User string `json:"user"`
+	Authorized bool   `json:"authorized"`
+	User       string `json:"user"`
 }
-
 
 func CreateToken(data Claims) string {
 	jwtSecret := os.Getenv("JWT_SECRET")
-	token  := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = data.Authorized
 	claims["user"] = data.User
@@ -30,19 +29,19 @@ func CreateToken(data Claims) string {
 	return t
 }
 
-func VerifyToken(token string) (jwt.MapClaims, bool) {
-	 // Parse the token
-	 jwtSecret := os.Getenv("JWT_SECRET")
-	 t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		 return []byte(jwtSecret), nil
-	 })
-	 if err != nil {
-		 return nil, false
-	 }
-	 claims, ok := t.Claims.(jwt.MapClaims)
-	 if !ok || !t.Valid {
-		 return nil, false
-	 }
-	 return claims, true
+func VerifyToken(token string) (jwt.MapClaims, bool, error) {
+	// Parse the token
+	jwtSecret := os.Getenv("JWT_SECRET")
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtSecret), nil
+	})
 
+	if err != nil {
+		return nil, false, err
+	}
+	claims, ok := t.Claims.(jwt.MapClaims)
+	if !ok || !t.Valid {
+		return nil, false, nil
+	}
+	return claims, true, nil
 }
