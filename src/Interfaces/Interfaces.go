@@ -11,6 +11,7 @@ type SystemInterface struct {
 	AppListenHost    string
 	AppListenPort    int
 	ServerHeader     string
+	AppBodyLimit     int
 }
 
 type AddCustomer struct {

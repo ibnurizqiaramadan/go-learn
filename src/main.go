@@ -22,5 +22,6 @@ func main() {
 		AppPrefork:      Functions.StoB(os.Getenv("APP_PREFORK")),
 		AppListenPort:   Functions.StoI(os.Getenv("APP_LISTEN_PORT")),
 		AppListenHost:   os.Getenv("APP_LISTEN_HOST"),
+		AppBodyLimit:    Functions.StoI(os.Getenv("APP_BODY_LIMIT")),
 	})
 }
