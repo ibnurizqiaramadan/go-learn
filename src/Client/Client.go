@@ -23,7 +23,9 @@ func RunServer(params Interfaces.SystemInterface) {
 		AppName:       params.AppName,
 		JSONEncoder:   json.Marshal,
 		JSONDecoder:   json.Unmarshal,
+		BodyLimit:     100 * 1024 * 1024,
 	})
+
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: params.CorsAllowOrigin,
 		AllowMethods: params.CorsAllowMethod,

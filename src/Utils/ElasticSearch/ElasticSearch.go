@@ -6,6 +6,6 @@ import (
 
 var ElasticConfig = elasticsearch.Config{
 	Addresses: []string{
-		"http://194.233.95.186:9331",
+		"http://192.168.69.70:9331",
 	},
 }
