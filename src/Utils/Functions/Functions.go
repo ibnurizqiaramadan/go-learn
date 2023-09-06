@@ -3,13 +3,15 @@ package Functions
 import (
 	"strconv"
 
+	// "github.com/go-errors/errors"
 	"github.com/gofiber/fiber/v2/log"
 )
 
 func StoI(s string) int {
-	result, error := strconv.Atoi(s)
-	if error != nil {
-		log.Error(error)
+	result, err := strconv.Atoi(s)
+	// log.Error(err.(*errors.Error).Unwrap().Error())
+	if err != nil {
+		log.Error(err)
 		return -0
 	}
 	return result
