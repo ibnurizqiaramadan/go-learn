@@ -30,7 +30,7 @@ func CreateToken(data Claims) string {
 	return t
 }
 
-func VerifyJwtToken(token string) (jwt.MapClaims, bool) {
+func VerifyToken(token string) (jwt.MapClaims, bool) {
 	 // Parse the token
 	 jwtSecret := os.Getenv("JWT_SECRET")
 	 t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
