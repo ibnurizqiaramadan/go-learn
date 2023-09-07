@@ -9,19 +9,14 @@ import (
 )
 
 func excludePaths(path string, arrPath []string) bool {
-	matchCount := 0
-	for _, path_ := range arrPath {
-		if strings.HasSuffix(path_, "*") {
-			if strings.Contains(path, strings.TrimSuffix(path_, "*")) {
-				matchCount++
-				continue
-			}
-		}
-		if strings.Contains(path, path_) && len(path_) == len(path) {
-			matchCount++
+	for _, pattern := range arrPath {
+		if strings.HasSuffix(pattern, "*") && strings.HasPrefix(path, strings.TrimSuffix(pattern, "*")) {
+			return true
+		} else if path == pattern {
+			return true
 		}
 	}
-	return matchCount > 0
+	return false
 }
 
 var AuthData any
