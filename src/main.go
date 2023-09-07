@@ -23,5 +23,10 @@ func main() {
 		AppListenPort:   Functions.StoI(os.Getenv("APP_LISTEN_PORT")),
 		AppListenHost:   os.Getenv("APP_LISTEN_HOST"),
 		AppBodyLimit:    Functions.StoI(os.Getenv("APP_BODY_LIMIT")),
+		IgnoreAuthPath: []string{ // this will ignore auth for certain paths
+			"/",
+			"/auth",
+			"/users/register*",
+		},
 	})
 }
