@@ -12,6 +12,7 @@ type SystemInterface struct {
 	AppListenPort    int
 	ServerHeader     string
 	AppBodyLimit     int
+	IgnoreAuthPath   []string
 }
 
 type AddCustomer struct {
