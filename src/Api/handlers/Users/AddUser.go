@@ -1,6 +1,7 @@
 package Users
 
 import (
+	AuthMiddleware "go-learning/src/Api/middleware"
 	"go-learning/src/Utils/MysqlClient"
 	"time"
 
@@ -9,7 +10,8 @@ import (
 )
 
 func AddUsers(c *fiber.Ctx) error {
-	return c.Status(200).SendString("Add Users !")
+	authData := AuthMiddleware.AuthData // get decoded auth token
+	return c.Status(fiber.StatusOK).JSON(authData)
 }
 
 func AddUserMysql(c *fiber.Ctx) error {
@@ -32,7 +34,7 @@ func AddUserMysql(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
 	}
 	var response = map[string]interface{}{
-		"status": fiber.StatusOK,
+		"status":  fiber.StatusOK,
 		"message": "Successfully add user",
 	}
 	return c.Status(fiber.StatusOK).JSON(response)
