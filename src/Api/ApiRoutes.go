@@ -10,6 +10,7 @@ import (
 	"go-learning/src/Api/handlers/RabbitMQ"
 	"go-learning/src/Api/handlers/Redis"
 	"go-learning/src/Api/handlers/Users"
+	"go-learning/src/Api/middleware/RedisMiddleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,7 +25,7 @@ func InitRoutes(http *fiber.App) {
 	http.Get("/users", Users.AddUsers)
 	http.Get("/users/:name", Users.AddUsers)
 	http.Get("/get-admin", HowToGetQuery.ExampleGetUsingAdmin)
-	http.Get("/get-user", HowToGetQuery.ExampleGetUsingUser)
+	http.Get("/get-user", RedisMiddleware.Cache, HowToGetQuery.ExampleGetUsingUser)
 	http.Get("/get-pagination", HowToGetQuery.ExampleGetPagination)
 	http.Get("/get-where", HowToGetQuery.ExampleGetWhere)
 	http.Post("/mutation", QueryMutation.MutationUsers)
