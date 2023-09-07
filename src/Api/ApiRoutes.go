@@ -31,7 +31,7 @@ func InitRoutes(http *fiber.App) {
 	http.Post("/mutation-update", QueryMutation.MutationUpdateUsers)
 
 	// Billings Routes Stripe
-	BillingGroup := http.Group("billing", func(c *fiber.Ctx) error { return c.Next() })
+	BillingGroup := http.Group("billing")
 	BillingGroup.Post("/create-customer", Billings.AddCustomer)
 	BillingGroup.Get("/get-customer", Billings.GetCustomer)
 
