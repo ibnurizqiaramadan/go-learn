@@ -1,7 +1,7 @@
 package Users
 
 import (
-	AuthMiddleware "go-learning/src/Api/middleware"
+	"go-learning/src/Api/middleware/AuthMiddleware"
 	"go-learning/src/Utils/MysqlClient"
 	"time"
 

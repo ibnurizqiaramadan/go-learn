@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	ApiRoutes "go-learning/src/Api"
-	Middleware "go-learning/src/Api/middleware"
+	"go-learning/src/Api/middleware/AuthMiddleware"
+
+	// "go-learning/src/Api/middleware/AuthMiddleware"
 	"go-learning/src/Interfaces"
 	"go-learning/src/Utils/RedisClient"
 	"go-learning/src/Utils/StripeClient"
@@ -37,9 +39,10 @@ func RunServer(params Interfaces.SystemInterface) {
 		AllowHeaders: params.CorsAllowHeader,
 	}))
 
-	Middleware.IgnoreAuth = params.IgnoreAuthPath
-	app.Use(logger.New())         // logging
-	app.Use(Middleware.CheckAuth) // auth middleware check
+	AuthMiddleware.IgnoreAuth = params.IgnoreAuthPath
+
+	app.Use(logger.New())             // logging
+	app.Use(AuthMiddleware.CheckAuth) // auth middleware check
 
 	StripeClient.InitStripe()
 	RedisClient.InitRedis()
