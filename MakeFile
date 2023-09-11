@@ -1,0 +1,8 @@
+dev: rundev
+build: buildapp
+
+buildapp:
+	go build -o golang-learn src/main.go
+
+rundev:
+	nodemon --exec go run src/main.go
